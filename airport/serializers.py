@@ -1,6 +1,15 @@
 from rest_framework import serializers
 
-from airport.models import AirplaneType, Airplane, Airport, Route, Crew, Flight, Ticket, Order
+from airport.models import (
+    AirplaneType,
+    Airplane,
+    Airport,
+    Route,
+    Crew,
+    Flight,
+    Ticket,
+    Order
+)
 
 
 class AirplaneTypeSerializer(serializers.ModelSerializer):
