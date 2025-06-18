@@ -17,6 +17,10 @@ class Airplane(models.Model):
     seats_in_row = models.IntegerField()
     airplane_type = models.ForeignKey(AirplaneType, on_delete=models.CASCADE, related_name="airplanes")
 
+    @property
+    def capacity(self):
+        return self.rows * self.seats_in_row
+
     def __str__(self):
         return f"{self.name}: type {self.airplane_type.name}"
 
@@ -28,6 +32,9 @@ class Airport(models.Model):
     def __str__(self):
         return f"{self.name} ({self.closest_big_city})"
 
+    class Meta:
+        ordering = ("closest_big_city",)
+
 
 class Route(models.Model):
     source = models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="routes_from")
@@ -36,6 +43,12 @@ class Route(models.Model):
 
     def __str__(self):
         return f"From: {self.source.name} To: {self.destination.name} Distance: {self.distance}km"
+
+    class Meta:
+        indexes = [
+            models.Index(fields=("source", "destination"))
+        ]
+        ordering = ("source", "destination")
 
 
 class Crew(models.Model):
@@ -59,13 +72,16 @@ class Flight(models.Model):
                 f"Departure: {self.departure_time}\n"
                 f"Arrival: {self.arrival_time}")
 
+    class Meta:
+        ordering = ("departure_time",)
+
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     class Meta:
-        ordering = ["created_at"]
+        ordering = ("created_at",)
 
     def __str__(self):
         return str(self.created_at)
