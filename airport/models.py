@@ -42,7 +42,7 @@ class Route(models.Model):
     distance = models.IntegerField()
 
     def __str__(self):
-        return f"From: {self.source.name} To: {self.destination.name} Distance: {self.distance}km"
+        return f"{self.source.name} --> {self.destination.name} -- ({self.distance}km)"
 
     class Meta:
         indexes = [
