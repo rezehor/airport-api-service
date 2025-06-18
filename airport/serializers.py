@@ -103,7 +103,7 @@ class FlightListSerializer(serializers.ModelSerializer):
 
 class FlightDetailSerializer(FlightSerializer):
     route = RouteDetailSerializer(read_only=True)
-    airplane = AirplaneSerializer(read_only=True)
+    airplane = AirplaneListSerializer(read_only=True)
     crew = CrewSerializer(many=True, read_only=True)
 
 
