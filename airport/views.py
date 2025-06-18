@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db.models import F, Count
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
@@ -90,6 +92,34 @@ class FlightViewSet(viewsets.ModelViewSet):
         )
     )
 
+    @staticmethod
+    def _params_to_ints(qs):
+        """Converts a list of string IDs to a list of integers"""
+        return [int(str_id) for str_id in qs.split(",")]
+
+    def get_queryset(self):
+        """Retrieve the flights with filters"""
+        departure_airport = self.request.query_params.get("departure_airport")
+        arrival_airport = self.request.query_params.get("arrival_airport")
+        date = self.request.query_params.get("date")
+
+        queryset = self.queryset
+
+        if departure_airport:
+            departure_airport_ids = self._params_to_ints(departure_airport)
+            queryset = queryset.filter(route__source__id__in=departure_airport_ids)
+
+        if arrival_airport:
+            arrival_airport_ids = self._params_to_ints(arrival_airport)
+            queryset = queryset.filter(route__destination__id__in=arrival_airport_ids)
+
+        if date:
+            date = datetime.strptime(date, "%Y-%m-%d").date()
+            queryset = queryset.filter(departure_time__date=date)
+
+        return queryset.distinct()
+
+
     def get_serializer_class(self):
         if self.action == "list":
             return FlightListSerializer
@@ -97,10 +127,6 @@ class FlightViewSet(viewsets.ModelViewSet):
             return FlightDetailSerializer
         return FlightSerializer
 
-
-class OrderPagination(PageNumberPagination):
-    page_size = 10
-    max_page_size = 100
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
