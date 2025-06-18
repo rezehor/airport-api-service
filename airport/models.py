@@ -5,7 +5,7 @@ from airport_api_service import settings
 
 
 class AirplaneType(models.Model):
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64, unique=True)
 
     def __str__(self):
         return self.name
@@ -109,7 +109,6 @@ class Ticket(models.Model):
                     {
                         ticket_attr_name: f"{ticket_attr_name} "
                                           f"number must be in available range: "
-                                          f"(1, {airplane_attr_name}): "
                                           f"(1, {count_attrs})"
                     }
                 )
