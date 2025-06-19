@@ -1,6 +1,8 @@
 from datetime import datetime
 
 from django.db.models import F, Count
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, mixins, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -116,6 +118,18 @@ class AirportViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "city",
+                type=OpenApiTypes.STR,
+                description="Filter by closest big city name (ex. ?city=London)",
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 
 class RouteViewSet(viewsets.ModelViewSet):
     queryset = Route.objects.all().select_related("source", "destination")
@@ -183,8 +197,8 @@ class FlightViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """Retrieve the flights with filters"""
-        departure_airport = self.request.query_params.get("departure_airport")
-        arrival_airport = self.request.query_params.get("arrival_airport")
+        departure_airport = self.request.query_params.get("departure-airport")
+        arrival_airport = self.request.query_params.get("arrival-airport")
         date = self.request.query_params.get("date")
 
         queryset = self.queryset
@@ -211,6 +225,31 @@ class FlightViewSet(viewsets.ModelViewSet):
         elif self.action == "retrieve":
             return FlightDetailSerializer
         return FlightSerializer
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "departure-airport",
+                type=OpenApiTypes.INT,
+                description="Filter by departure airport id (ex. ?departure-airport=2)",
+            ),
+            OpenApiParameter(
+                "arrival-airport",
+                type=OpenApiTypes.INT,
+                description="Filter by arrival airport id (ex. ?arrival-airport=2)",
+            ),
+            OpenApiParameter(
+                "date",
+                type=OpenApiTypes.DATE,
+                description=(
+                        "Filter by departure time of Flights "
+                        "(ex. ?date=2025-10-23)"
+                ),
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class OrderViewSet(
