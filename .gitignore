@@ -354,3 +354,4 @@ pyrightconfig.json
 # End of https://www.toptal.com/developers/gitignore/api/python,pycharm+all,django
 airport/migrations
 user/migrations
+.flake8

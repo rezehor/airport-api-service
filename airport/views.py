@@ -1,9 +1,9 @@
 from datetime import datetime
 
 from django.db.models import F, Count
-from rest_framework import viewsets
-from rest_framework.pagination import PageNumberPagination
+from rest_framework import viewsets, mixins
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import GenericViewSet
 
 from airport.models import (
     Airplane,
@@ -27,7 +27,9 @@ from airport.serializers import (
     RouteListSerializer,
     FlightListSerializer,
     FlightDetailSerializer,
-    OrderListSerializer, OrderDetailSerializer, RouteDetailSerializer,
+    OrderListSerializer,
+    OrderDetailSerializer,
+    RouteDetailSerializer,
 )
 
 
@@ -136,19 +138,18 @@ class FlightViewSet(viewsets.ModelViewSet):
         return FlightSerializer
 
 
-class OrderViewSet(viewsets.ModelViewSet):
+class OrderViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    GenericViewSet,
+):
     queryset = Order.objects.all()
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         queryset = self.queryset.filter(user=self.request.user)
-        if self.action == "list":
-            queryset = queryset.prefetch_related(
-                "tickets__flight__route",
-                "tickets__flight__airplane",
-                "tickets__flight__crew",
-            )
-        elif self.action == "retrieve":
+        if self.action in ("list", "retrieve"):
             queryset = queryset.prefetch_related(
                 "tickets__flight__route",
                 "tickets__flight__airplane",
