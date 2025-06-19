@@ -18,7 +18,7 @@ from airport.models import (
     Flight,
     Order,
 )
-from airport.permissions import IsAdminOrIfAuthenticatedReadOnly
+from airport.permissions import IsAdminOrReadOnly
 from airport.serializers import (
     AirplaneSerializer,
     AirplaneTypeSerializer,
@@ -43,7 +43,7 @@ from airport.serializers import (
 
 class AirplaneTypeViewSet(viewsets.ModelViewSet):
     queryset = AirplaneType.objects.all()
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+    permission_classes = (IsAdminOrReadOnly,)
 
     def get_serializer_class(self):
         if self.action in ("list", "retrieve"):
@@ -72,7 +72,7 @@ class AirplaneTypeViewSet(viewsets.ModelViewSet):
 
 class AirplaneViewSet(viewsets.ModelViewSet):
     queryset = Airplane.objects.all().select_related("airplane_type")
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly, )
+    permission_classes = (IsAdminOrReadOnly, )
 
     def get_serializer_class(self):
         if self.action in ("list", "retrieve"):
@@ -82,7 +82,7 @@ class AirplaneViewSet(viewsets.ModelViewSet):
 
 class AirportViewSet(viewsets.ModelViewSet):
     queryset = Airport.objects.all()
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly, )
+    permission_classes = (IsAdminOrReadOnly, )
 
     def get_queryset(self):
         city = self.request.query_params.get("city")
@@ -133,7 +133,7 @@ class AirportViewSet(viewsets.ModelViewSet):
 
 class RouteViewSet(viewsets.ModelViewSet):
     queryset = Route.objects.all().select_related("source", "destination")
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly, )
+    permission_classes = (IsAdminOrReadOnly, )
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -145,7 +145,7 @@ class RouteViewSet(viewsets.ModelViewSet):
 
 class CrewViewSet(viewsets.ModelViewSet):
     queryset = Crew.objects.all()
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly, )
+    permission_classes = (IsAdminOrReadOnly, )
 
     def get_serializer_class(self):
         if self.action in ("list", "retrieve"):
@@ -188,7 +188,7 @@ class FlightViewSet(viewsets.ModelViewSet):
             )
         )
     )
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly, )
+    permission_classes = (IsAdminOrReadOnly, )
 
     @staticmethod
     def _params_to_ints(qs):
