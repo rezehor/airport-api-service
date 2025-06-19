@@ -37,7 +37,10 @@ from airport.serializers import (
     AirplaneTypeImageSerializer,
     AirplaneTypeListSerializer,
     AirportListSerializer,
-    AirportImageSerializer, CrewListSerializer, CrewImageSerializer,
+    AirportImageSerializer,
+    CrewListSerializer,
+    CrewImageSerializer,
+    AirplaneDetailSerializer,
 )
 
 
@@ -75,8 +78,10 @@ class AirplaneViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdminOrReadOnly, )
 
     def get_serializer_class(self):
-        if self.action in ("list", "retrieve"):
+        if self.action == "list":
             return AirplaneListSerializer
+        elif self.action == "retrieve":
+            return AirplaneDetailSerializer
         return AirplaneSerializer
 
 

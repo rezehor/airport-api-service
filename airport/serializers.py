@@ -47,6 +47,10 @@ class AirplaneListSerializer(AirplaneSerializer):
     )
 
 
+class AirplaneDetailSerializer(AirplaneSerializer):
+    airplane_type = AirplaneTypeListSerializer()
+
+
 class AirportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Airport
