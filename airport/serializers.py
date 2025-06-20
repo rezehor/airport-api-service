@@ -36,7 +36,14 @@ class AirplaneSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Airplane
-        fields = ("id", "name", "rows", "seats_in_row", "airplane_type", "capacity")
+        fields = (
+            "id",
+            "name",
+            "rows",
+            "seats_in_row",
+            "airplane_type",
+            "capacity"
+        )
 
 
 class AirplaneListSerializer(AirplaneSerializer):
@@ -117,8 +124,14 @@ class FlightSerializer(serializers.ModelSerializer):
 
 
 class FlightListSerializer(serializers.ModelSerializer):
-    departure_airport = serializers.CharField(source="route.source.closest_big_city", read_only=True)
-    arrival_airport = serializers.CharField(source="route.destination.closest_big_city", read_only=True)
+    departure_airport = serializers.CharField(
+        source="route.source.closest_big_city",
+        read_only=True
+    )
+    arrival_airport = serializers.CharField(
+        source="route.destination.closest_big_city",
+        read_only=True
+    )
     airplane = serializers.StringRelatedField(read_only=True)
     crew = serializers.SlugRelatedField(
         many=True,
@@ -172,7 +185,11 @@ class TicketDetailSerializer(TicketSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    tickets = TicketSerializer(many=True, read_only=False, allow_empty=False)
+    tickets = TicketSerializer(
+        many=True,
+        read_only=False,
+        allow_empty=False
+    )
 
     def create(self, validated_data):
         with transaction.atomic():

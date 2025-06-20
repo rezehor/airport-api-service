@@ -128,7 +128,8 @@ class AirportViewSet(viewsets.ModelViewSet):
             OpenApiParameter(
                 "city",
                 type=OpenApiTypes.STR,
-                description="Filter by closest big city name (ex. ?city=London)",
+                description="Filter by closest big city name "
+                            "(ex. ?city=London)",
             ),
         ]
     )
@@ -181,9 +182,9 @@ class FlightViewSet(viewsets.ModelViewSet):
     queryset = (
         Flight.objects.all()
         .select_related(
-    "route__source",
-        "route__destination",
-        "airplane__airplane_type",
+            "route__source",
+            "route__destination",
+            "airplane__airplane_type",
         )
         .prefetch_related("crew")
         .annotate(
@@ -210,19 +211,21 @@ class FlightViewSet(viewsets.ModelViewSet):
 
         if departure_airport:
             departure_airport_ids = self._params_to_ints(departure_airport)
-            queryset = queryset.filter(route__source__id__in=departure_airport_ids)
+            queryset = queryset.filter(
+                route__source__id__in=departure_airport_ids
+            )
 
         if arrival_airport:
             arrival_airport_ids = self._params_to_ints(arrival_airport)
-            queryset = queryset.filter(route__destination__id__in=arrival_airport_ids)
+            queryset = queryset.filter(
+                route__destination__id__in=arrival_airport_ids
+            )
 
         if date:
             date = datetime.strptime(date, "%Y-%m-%d").date()
             queryset = queryset.filter(departure_time__date=date)
 
-
         return queryset.distinct()
-
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -236,19 +239,21 @@ class FlightViewSet(viewsets.ModelViewSet):
             OpenApiParameter(
                 "departure-airport",
                 type=OpenApiTypes.INT,
-                description="Filter by departure airport id (ex. ?departure-airport=2)",
+                description="Filter by departure airport id "
+                            "(ex. ?departure-airport=2)",
             ),
             OpenApiParameter(
                 "arrival-airport",
                 type=OpenApiTypes.INT,
-                description="Filter by arrival airport id (ex. ?arrival-airport=2)",
+                description="Filter by arrival airport id "
+                            "(ex. ?arrival-airport=2)",
             ),
             OpenApiParameter(
                 "date",
                 type=OpenApiTypes.DATE,
                 description=(
-                        "Filter by departure time of Flights "
-                        "(ex. ?date=2025-10-23)"
+                    "Filter by departure time of Flights "
+                    "(ex. ?date=2025-10-23)"
                 ),
             ),
         ]
