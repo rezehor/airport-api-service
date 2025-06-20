@@ -27,7 +27,7 @@ def sample_airplane_type(**params):
     return AirplaneType.objects.create(**defaults)
 
 def sample_airplane(**params):
-    airplane_type = AirplaneType.objects.create(
+    airplane_type, _ = AirplaneType.objects.get_or_create(
         name="Test Airplane Type"
     )
 

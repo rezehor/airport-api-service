@@ -161,7 +161,7 @@ class AuthenticatedAirportApiTests(BaseAirportApiTests):
         )
         self.client.force_authenticate(user)
 
-    def test_create_airplane_type_forbidden(self):
+    def test_create_airport_forbidden(self):
         payload = {
             "name": "Test Airport",
             "closest_big_city": "Test City",
@@ -171,7 +171,7 @@ class AuthenticatedAirportApiTests(BaseAirportApiTests):
 
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_create_airplane_forbidden(self):
+    def test_create_route_forbidden(self):
         source = Airport.objects.create(
             name="Source Airport",
             closest_big_city="Source City",
