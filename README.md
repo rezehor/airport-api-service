@@ -74,6 +74,7 @@ POSTGRES_DB=your_database_name              # e.g. airport
 POSTGRES_HOST=your_database_host            # e.g. db
 POSTGRES_PORT=5432                          # usually 5432
 PGDATA=/var/lib/postgresql/data             # default value
+SECRET_KEY=your_secret_key
 ```
 
 ### Step 5: Database Setup
